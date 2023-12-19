@@ -28,8 +28,13 @@ export default function Game(props) {
       <View className='pt-1.5'>
         {(props.disabledButtons && props.player2Text !== 'COM') ? (
           <View className='pt-2.5 items-center'>
-            <Text>You chose {move}.</Text>
-            <Text>Waiting for opponent's choice...</Text>
+            <Text style={props.themeTextColor}>
+              You chose {move}.
+            </Text>
+
+            <Text style={props.themeTextColor}>
+              Waiting for opponent's choice...
+            </Text>
           </View>
         ) : (
           <></>

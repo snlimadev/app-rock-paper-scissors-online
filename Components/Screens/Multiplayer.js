@@ -125,7 +125,6 @@ export default function Multiplayer(props) {
 
       <Dialog
         isVisible={loadingVisible}
-        onBackdropPress={() => setLoadingVisible(false)}
         overlayStyle={themeBgColor}
       >
         <Text

@@ -192,7 +192,6 @@ export default function Lobby(props) {
 
       <Dialog
         isVisible={loadingVisible}
-        onBackdropPress={() => setLoadingVisible(false)}
         overlayStyle={themeBgColor}
       >
         <Text

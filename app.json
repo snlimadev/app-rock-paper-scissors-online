@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rock Paper Scissors",
     "slug": "rock-paper-scissors-online",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
     },
     "android": {
       "package": "com.snlimadev.rockpaperscissors",
-      "versionCode": 2,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF8C00"
