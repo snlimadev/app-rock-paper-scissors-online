@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import styles from '../../css/styles';
 
@@ -86,11 +86,14 @@ export function handleLobbyWebSocketEvents(
     };
 
     ws.onerror = () => {
-      Alert.alert(
-        'Error',
-        'Connection to the server lost or expired. ' +
-        'Please check your internet connection and try again later.'
-      );
+      showMessage({
+        message: 'Connection to the server lost or expired',
+        description: 'Please check your internet connection ' +
+          'and try again later.',
+        type: 'danger',
+        icon: 'danger',
+        duration: 5000
+      });
 
       navigate('Home');
     };
@@ -166,11 +169,14 @@ function handleGameRoundsMultiplayer(
       if (data.event === 'Opponent joined the game.') {
         setGameStart(true);
       } else if (data.event === 'Opponent left the game.') {
-        Alert.alert(
-          'Opponent left. Final score:',
-          `YOU ${playerPoints} x ${opponentPoints} OPP` +
-          `\n${draws} DRAWS`
-        );
+        showMessage({
+          message: 'Opponent left. Final score:',
+          description: `YOU ${playerPoints} x ${opponentPoints} OPP` +
+            `\n${draws} DRAWS`,
+          type: 'info',
+          icon: 'info',
+          duration: 5000
+        });
 
         navigate('Home');
       }
@@ -179,10 +185,13 @@ function handleGameRoundsMultiplayer(
       opponentPoints = 0;
       draws = 0;
     } else if (data.error) {
-      Alert.alert(
-        'Error',
-        data.error
-      );
+      showMessage({
+        message: 'Error',
+        description: data.error,
+        type: 'danger',
+        icon: 'danger',
+        duration: 5000
+      });
 
       navigate('Home');
     }
@@ -219,11 +228,14 @@ export function handleGameWebSocketEvents(
     };
 
     ws.onerror = () => {
-      Alert.alert(
-        'Error',
-        'Connection to the server lost or expired. ' +
-        'Please check your internet connection and try again later.'
-      );
+      showMessage({
+        message: 'Connection to the server lost or expired',
+        description: 'Please check your internet connection ' +
+          'and try again later.',
+        type: 'danger',
+        icon: 'danger',
+        duration: 5000
+      });
 
       navigate('Home');
     };

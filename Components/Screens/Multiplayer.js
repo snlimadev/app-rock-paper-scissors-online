@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Text, BackHandler } from 'react-native';
 import { Dialog } from '@rneui/themed';
+import { showMessage } from 'react-native-flash-message';
 
 import styles from '../../css/styles';
 import WaitingCard from '../WaitingCard';
@@ -40,6 +41,12 @@ export default function Multiplayer(props) {
   const handleCreateOrJoinRoom = () => {
     createOrJoinRoom(action, publicRoom, roomCode, ws);
     setLoadingVisible(false);
+
+    showMessage({
+      message: 'Connected',
+      type: 'success',
+      icon: 'success'
+    });
   };
 
   const handleMove = (move) => {
@@ -125,7 +132,7 @@ export default function Multiplayer(props) {
 
       <Dialog
         isVisible={loadingVisible}
-        overlayStyle={themeBgColor}
+        overlayStyle={[themeBgColor, styles.roundedBorder]}
       >
         <Text
           className='text-lg text-center font-bold'

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { ScrollView, View, Text } from 'react-native';
 import { Button, Card } from '@rneui/base';
 import { Icon, Dialog } from '@rneui/themed';
+import { showMessage } from 'react-native-flash-message';
 
 import styles from '../../css/styles';
 import LobbyModal from '../LobbyModal';
@@ -35,6 +36,12 @@ export default function Lobby(props) {
   const handleGetAvailableRoomsList = () => {
     getAvailableRoomsList(ws);
     setLoadingVisible(false);
+
+    showMessage({
+      message: 'Connected',
+      type: 'success',
+      icon: 'success'
+    });
   };
 
   const handleUpdateAvailableRooms = (e) => {
@@ -192,7 +199,7 @@ export default function Lobby(props) {
 
       <Dialog
         isVisible={loadingVisible}
-        overlayStyle={themeBgColor}
+        overlayStyle={[themeBgColor, styles.roundedBorder]}
       >
         <Text
           className='text-lg text-center font-bold'
