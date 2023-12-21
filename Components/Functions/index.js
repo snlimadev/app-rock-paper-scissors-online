@@ -168,6 +168,12 @@ function handleGameRoundsMultiplayer(
     } else if (data.event) {
       if (data.event === 'Opponent joined the game.') {
         setGameStart(true);
+
+        showMessage({
+          message: 'Game starts!',
+          type: 'info',
+          icon: 'info'
+        });
       } else if (data.event === 'Opponent left the game.') {
         showMessage({
           message: 'Opponent left. Final score:',
