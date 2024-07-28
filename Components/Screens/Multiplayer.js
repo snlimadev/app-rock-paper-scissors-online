@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Text, BackHandler } from 'react-native';
 import { Dialog } from '@rneui/themed';
+import { showMessage } from 'react-native-flash-message';
 
 import styles from '../../css/styles';
 import WaitingCard from '../WaitingCard';
@@ -11,7 +12,8 @@ import {
   changeTheme,
   handleGameWebSocketEvents,
   createOrJoinRoom,
-  makeMove
+  makeMove,
+  handleGameRoundsMultiplayer
 } from '../Functions';
 
 export default function Multiplayer(props) {
@@ -26,6 +28,7 @@ export default function Multiplayer(props) {
   const [opponentScore, setOpponentScore] = useState(0);
   const [drawCounter, setDrawCounter] = useState(0);
   const [gameStart, setGameStart] = useState(false);
+  const [gameEnd, setGamEnd] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
@@ -45,10 +48,39 @@ export default function Multiplayer(props) {
   const handleMove = (move) => {
     setDisabledButtons(true);
     makeMove(move, ws, readyState);
-  }
+  };
+
+  const handleGameRounds = (e) => {
+    handleGameRoundsMultiplayer(
+      e,
+      player,
+      setPlayerScore,
+      setOpponentScore,
+      setDrawCounter,
+      setGameStart,
+      setGamEnd,
+      setModalVisible,
+      setModalTitle,
+      setModalDescription,
+      navigate
+    );
+  };
+
+  const handleGameEnd = () => {
+    showMessage({
+      message: 'Opponent left. Final score:',
+      description: `YOU ${playerScore} x ${opponentScore} OPP` +
+        `\n${drawCounter} DRAWS`,
+      type: 'info',
+      icon: 'info',
+      duration: 5000
+    });
+
+    navigate('Home');
+  };
 
   const handleBackPress = () => {
-    props.navigation.navigate('Home');
+    navigate('Home');
     return true;
   };
   //#endregion
@@ -59,14 +91,7 @@ export default function Multiplayer(props) {
       ws,
       setReadyState,
       handleCreateOrJoinRoom,
-      player,
-      setPlayerScore,
-      setOpponentScore,
-      setDrawCounter,
-      setGameStart,
-      setModalVisible,
-      setModalTitle,
-      setModalDescription,
+      handleGameRounds,
       navigate
     );
 
@@ -76,6 +101,12 @@ export default function Multiplayer(props) {
       }
     };
   }, [readyState]);
+
+  useEffect(() => {
+    if (gameEnd) {
+      handleGameEnd();
+    }
+  }, [gameEnd]);
 
   useEffect(() => {
     BackHandler.addEventListener(

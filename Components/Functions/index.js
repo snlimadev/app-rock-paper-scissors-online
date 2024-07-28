@@ -6,10 +6,6 @@ export function getWsConnectionUrl() {
   return 'wss://api-rock-paper-scissors-online.glitch.me';
 }
 
-let playerPoints = 0;
-let opponentPoints = 0;
-let draws = 0
-
 //#region Function to enable/disable dark mode
 // Função para ativar/desativar o modo escuro
 export function changeTheme(
@@ -131,15 +127,16 @@ export function updateAvailableRooms(e, setAvailableRooms) {
 };
 //#endregion
 
-//#region Local function to handle game rounds (multiplayer)
-// Função local para lidar com as rodadas do jogo (dois jogadores)
-function handleGameRoundsMultiplayer(
+//#region Function to handle game rounds (multiplayer)
+// Função para lidar com as rodadas do jogo (dois jogadores)
+export function handleGameRoundsMultiplayer(
   e,
   player,
   setPlayerScore,
   setOpponentScore,
   setDrawCounter,
   setGameStart,
+  setGameEnd,
   setModalVisible,
   setModalTitle,
   setModalDescription,
@@ -151,16 +148,13 @@ function handleGameRoundsMultiplayer(
     if (data.winner && data.description) {
       if (data.winner === 'DRAW') {
         setModalTitle('Draw');
-        draws += 1;
-        setDrawCounter(draws);
+        setDrawCounter((draws) => draws + 1);
       } else if (data.winner === player) {
         setModalTitle('You win');
-        playerPoints += 1;
-        setPlayerScore(playerPoints);
+        setPlayerScore((playerPoints) => playerPoints + 1);
       } else {
         setModalTitle('Opponent wins');
-        opponentPoints += 1
-        setOpponentScore(opponentPoints);
+        setOpponentScore((opponentPoints) => opponentPoints + 1);
       }
 
       setModalDescription(data.description);
@@ -175,21 +169,8 @@ function handleGameRoundsMultiplayer(
           icon: 'info'
         });
       } else if (data.event === 'Opponent left the game.') {
-        showMessage({
-          message: 'Opponent left. Final score:',
-          description: `YOU ${playerPoints} x ${opponentPoints} OPP` +
-            `\n${draws} DRAWS`,
-          type: 'info',
-          icon: 'info',
-          duration: 5000
-        });
-
-        navigate('Home');
+        setGameEnd(true);
       }
-
-      playerPoints = 0;
-      opponentPoints = 0;
-      draws = 0;
     } else if (data.error) {
       showMessage({
         message: 'Error',
@@ -213,14 +194,7 @@ export function handleGameWebSocketEvents(
   ws,
   setReadyState,
   handleCreateOrJoinRoom,
-  player,
-  setPlayerScore,
-  setOpponentScore,
-  setDrawCounter,
-  setGameStart,
-  setModalVisible,
-  setModalTitle,
-  setModalDescription,
+  handleGameRounds,
   navigate
 ) {
   if (ws) {
@@ -247,18 +221,7 @@ export function handleGameWebSocketEvents(
     };
 
     ws.onmessage = (e) => {
-      handleGameRoundsMultiplayer(
-        e,
-        player,
-        setPlayerScore,
-        setOpponentScore,
-        setDrawCounter,
-        setGameStart,
-        setModalVisible,
-        setModalTitle,
-        setModalDescription,
-        navigate
-      )
+      handleGameRounds(e);
     };
   }
 }
