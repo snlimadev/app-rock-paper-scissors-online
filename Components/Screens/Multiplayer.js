@@ -1,15 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Text, BackHandler } from 'react-native';
+import { BackHandler } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 
-import styles from '../../css/styles';
 import WaitingCard from '../WaitingCard';
 import Game from '../Game';
 
 import {
   getWsConnectionUrl,
-  changeTheme,
   handleGameWebSocketEvents,
   createOrJoinRoom,
   makeMove,
@@ -17,11 +15,6 @@ import {
 } from '../Functions';
 
 export default function Multiplayer(props) {
-  const lightBackground = styles.lightThemeBgColor;
-  const lightText = styles.lightThemeTextColor;
-  const [themeBgColor, setThemeBgColor] = useState(lightBackground);
-  const [themeTextColor, setThemeTextColor] = useState(lightText);
-
   const [loadingVisible, setLoadingVisible] = useState(true);
   const [readyState, setReadyState] = useState('CONNECTING');
   const [playerScore, setPlayerScore] = useState(0);
@@ -109,36 +102,20 @@ export default function Multiplayer(props) {
   }, [gameEnd]);
 
   useEffect(() => {
-    BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackPress
-    );
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
     return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackPress
-      );
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
     };
   }, [props.navigation]);
-
-  useEffect(() => {
-    changeTheme(props.isDarkMode, setThemeBgColor, setThemeTextColor);
-  }, [props.isDarkMode]);
   //#endregion
 
   return (
     <>
       {(!gameStart) ? (
-        <WaitingCard
-          themeBgColor={themeBgColor}
-          themeTextColor={themeTextColor}
-          roomCode={roomCode}
-        />
+        <WaitingCard roomCode={roomCode} />
       ) : (
         <Game
-          themeBgColor={themeBgColor}
-          themeTextColor={themeTextColor}
           player1Text='YOU'
           player1Score={playerScore}
           player2Text='OPP'
@@ -154,16 +131,8 @@ export default function Multiplayer(props) {
         />
       )}
 
-      <Dialog
-        isVisible={loadingVisible}
-        overlayStyle={[themeBgColor, styles.roundedBorder]}
-      >
-        <Text
-          className='text-lg text-center font-bold'
-          style={themeTextColor}
-        >
-          LOADING...
-        </Text>
+      <Dialog isVisible={loadingVisible}>
+        <Dialog.Title title='LOADING...' />
         <Dialog.Loading />
       </Dialog>
     </>

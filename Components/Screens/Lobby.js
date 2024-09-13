@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ScrollView, View, Text } from 'react-native';
-import { Button, Card } from '@rneui/base';
-import { Icon, Dialog } from '@rneui/themed';
+import { ScrollView, View } from 'react-native';
+import { Button, Card, Icon, Dialog, Text } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 
 import styles from '../../css/styles';
@@ -9,24 +8,18 @@ import LobbyModal from '../LobbyModal';
 
 import {
   getWsConnectionUrl,
-  changeTheme,
   handleLobbyWebSocketEvents,
   getAvailableRoomsList,
   updateAvailableRooms
 } from '../Functions';
 
 export default function Lobby(props) {
-  const lightBackground = styles.lightThemeBgColor;
-  const lightText = styles.lightThemeTextColor;
-  const [themeBgColor, setThemeBgColor] = useState(lightBackground);
-  const [themeTextColor, setThemeTextColor] = useState(lightText);
-
   const [loadingVisible, setLoadingVisible] = useState(true);
   const [readyState, setReadyState] = useState('CONNECTING');
   const [availableRooms, setAvailableRooms] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
-  const [roomCode, setRoomCode] = useState('');
+  const [roomCodeInput, setRoomCodeInput] = useState('');
   const [publicRoom, setPublicRoom] = useState(true);
 
   const ws = useMemo(() => new WebSocket(getWsConnectionUrl()), []);
@@ -48,35 +41,34 @@ export default function Lobby(props) {
     updateAvailableRooms(e, setAvailableRooms);
   };
 
-  const handleCreateRoom = () => {
+  const handleOpenModal = (title) => {
+    setModalTitle(title);
+    setModalVisible(true);
+  };
+
+  const handleRedirect = (action, roomCode) => {
     setModalVisible(false);
 
     if (ws && readyState === 'OPEN') {
       ws.close();
     }
 
-    const randomCode = Math.floor(100000 + Math.random() * 900000);
-
     props.navigation.navigate('Multiplayer', {
-      action: 'create',
+      action: action,
       publicRoom: (publicRoom) ? 'Y' : 'N',
-      roomCode: randomCode
+      roomCode: roomCode
     });
   };
 
-  const handleJoinRoom = (room) => {
-    setModalVisible(false);
+  const handleCreateRoom = () => {
+    const randomCode = Math.floor(100000 + Math.random() * 900000);
+    handleRedirect('create', randomCode);
+  };
 
-    if (ws && readyState === 'OPEN') {
-      ws.close();
-    }
-
-    props.navigation.navigate('Multiplayer', {
-      action: 'join',
-      publicRoom: '',
-      roomCode: room || roomCode
-    });
-  }
+  const handleJoinRoom = (selectedRoom) => {
+    const roomCode = selectedRoom || roomCodeInput;
+    handleRedirect('join', roomCode);
+  };
   //#endregion
 
   //#region useEffect hooks
@@ -95,118 +87,68 @@ export default function Lobby(props) {
       }
     };
   }, [readyState]);
-
-  useEffect(() => {
-    changeTheme(props.isDarkMode, setThemeBgColor, setThemeTextColor);
-  }, [props.isDarkMode]);
   //#endregion
 
   return (
-    <View
-      className='flex-1 justify-center p-2.5'
-      style={themeBgColor}
-    >
-      <View className='pb-2 px-3.5'>
-        <Button
-          color='#FF8C00'
-          buttonStyle={styles.roundedBorder}
-          onPress={() => {
-            setModalTitle('Create Room');
-            setModalVisible(true);
-          }}
-        >
-          <Icon
-            name='plus-circle'
-            type='feather'
-            color='white'
-          /> CREATE A ROOM
+    <View style={styles.containerView}>
+      <View style={[styles.subcontainer, { justifyContent: 'flex-end' }]}>
+        <Button onPress={() => handleOpenModal('Create Room')} noPaddingTop>
+          <Icon name='plus-circle' type='feather' /> CREATE A ROOM
+        </Button>
+
+        <Button onPress={() => handleOpenModal('Join Room')}>
+          <Icon name='arrow-right-circle' type='feather' /> JOIN A ROOM
         </Button>
       </View>
 
-      <View className='px-3.5'>
-        <Button
-          color='#FF8C00'
-          buttonStyle={styles.roundedBorder}
-          onPress={() => {
-            setModalTitle('Join Room');
-            setModalVisible(true);
-          }}
-        >
-          <Icon
-            name='arrow-right-circle'
-            type='feather'
-            color='white'
-          /> JOIN A ROOM
-        </Button>
-      </View>
+      <ScrollView contentContainerStyle={styles.subcontainer}>
+        <Card>
+          <Card.Title>Public Rooms</Card.Title>
 
-      <Card
-        containerStyle={[themeBgColor, styles.roundedBorder]}
-      >
-        <Card.Title style={themeTextColor}>
-          Public Rooms
-        </Card.Title>
+          <Card.Divider />
 
-        <Card.Divider />
-
-        <View className='max-h-[30vh]'>
-          <ScrollView>
-            {(availableRooms.length > 0) ? (
-              <>
-                {availableRooms.map((rooms) => (
-                  <View key={rooms} className='pb-1.5'>
-                    <Button
-                      type='outline'
-                      size='sm'
-                      color='#FF8C00'
-                      titleStyle={styles.btnTextColor}
-                      buttonStyle={
-                        [styles.roundedBorder, styles.btnStyle]
-                      }
-                      onPress={() => handleJoinRoom(rooms)}
-                    >
-                      <Icon
-                        name='arrow-right-circle'
-                        type='feather'
-                        color='#FF8C00'
-                      /> {rooms}
-                    </Button>
-                  </View>
-                ))}
-              </>
-            ) : (
-              <Text className='text-center' style={themeTextColor}>
-                No public rooms available.
-              </Text>
-            )}
-          </ScrollView>
-        </View>
-      </Card>
+          {(availableRooms.length > 0) ? (
+            <>
+              {availableRooms.map((rooms, index) => (
+                <View key={rooms}>
+                  <Button
+                    type='outline'
+                    size='sm'
+                    onPress={() => handleJoinRoom(rooms)}
+                    noPaddingTop={index === 0}
+                  >
+                    <Icon
+                      name='arrow-right-circle'
+                      type='feather'
+                      small
+                      primary
+                    /> {rooms}
+                  </Button>
+                </View>
+              ))}
+            </>
+          ) : (
+            <Text centered noPaddingTop>
+              No public rooms available.
+            </Text>
+          )}
+        </Card>
+      </ScrollView>
 
       <LobbyModal
-        themeBgColor={themeBgColor}
-        themeTextColor={themeTextColor}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         modalTitle={modalTitle}
-        roomCode={roomCode}
-        setRoomCode={setRoomCode}
+        roomCode={roomCodeInput}
+        setRoomCode={setRoomCodeInput}
         publicRoom={publicRoom}
         setPublicRoom={setPublicRoom}
         createRoomAction={handleCreateRoom}
         joinRoomAction={handleJoinRoom}
       />
 
-      <Dialog
-        isVisible={loadingVisible}
-        overlayStyle={[themeBgColor, styles.roundedBorder]}
-      >
-        <Text
-          className='text-lg text-center font-bold'
-          style={themeTextColor}
-        >
-          CONNECTING...
-        </Text>
+      <Dialog isVisible={loadingVisible}>
+        <Dialog.Title title='CONNECTING...' />
         <Dialog.Loading />
       </Dialog>
     </View>

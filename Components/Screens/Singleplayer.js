@@ -1,19 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import styles from '../../css/styles';
 import Game from '../Game';
+import { handleGameRoundsSingleplayer } from '../Functions';
 
-import {
-  changeTheme,
-  handleGameRoundsSingleplayer
-} from '../Functions';
-
-export default function Singleplayer(props) {
-  const lightBackground = styles.lightThemeBgColor;
-  const lightText = styles.lightThemeTextColor;
-  const [themeBgColor, setThemeBgColor] = useState(lightBackground);
-  const [themeTextColor, setThemeTextColor] = useState(lightText);
-
+export default function Singleplayer() {
   const [playerScore, setPlayerScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
   const [drawCounter, setDrawCounter] = useState(0);
@@ -27,11 +17,8 @@ export default function Singleplayer(props) {
 
     handleGameRoundsSingleplayer(
       playerMove,
-      playerScore,
       setPlayerScore,
-      computerScore,
       setComputerScore,
-      drawCounter,
       setDrawCounter,
       setModalVisible,
       setModalTitle,
@@ -39,14 +26,8 @@ export default function Singleplayer(props) {
     );
   };
 
-  useEffect(() => {
-    changeTheme(props.isDarkMode, setThemeBgColor, setThemeTextColor);
-  }, [props.isDarkMode]);
-
   return (
     <Game
-      themeBgColor={themeBgColor}
-      themeTextColor={themeTextColor}
       player1Text='YOU'
       player1Score={playerScore}
       player2Text='COM'

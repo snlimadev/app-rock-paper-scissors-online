@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Text, View, Modal } from 'react-native';
-import { Card } from '@rneui/base';
-import { AntDesign } from '@expo/vector-icons';
+import { View, Modal } from 'react-native';
+import { Card, Text, Icon } from '@rneui/themed';
 
 import styles from '../css/styles';
 
 export default function ResultModal(props) {
   const [hasModalBeenShown, setHasModalBeenShown] = useState(false);
 
-  const closeModal = () => {
+  const handleCloseModal = () => {
     props.setModalVisible(false);
   };
 
   useEffect(() => {
     if (props.modalVisible && !hasModalBeenShown) {
       const modalTimeout = setTimeout(() => {
-        closeModal();
+        handleCloseModal();
         setHasModalBeenShown(true);
       }, 1500);
 
@@ -34,70 +33,32 @@ export default function ResultModal(props) {
       visible={props.modalVisible}
       onRequestClose={() => null}
     >
-      <View
-        className='flex-1 justify-center'
-        style={styles.backgroundBlur}
-      >
-        <Card
-          containerStyle={[props.themeBgColor, styles.roundedBorder]}
-        >
-          <View
-            className='items-center pb-5'
-            style={props.themeTextColor}
-          >
+      <View style={styles.modalOverlay}>
+        <Card>
+          <View style={styles.flexColumnContainer}>
             {(props.modalTitle === 'Draw') && (
-              <View className='items-center'>
-                <AntDesign
-                  name='exclamationcircleo'
-                  size={50}
-                  color='#eab308'
-                />
-
-                <Text
-                  className='text-2xl font-bold text-yellow-500 pt-3'
-                >
-                  {props.modalTitle}
-                </Text>
-              </View>
+              <>
+                <Icon name='exclamationcircleo' type='antdesign' xxxlarge warning />
+                <Text bold xlarge warning>{props.modalTitle}</Text>
+              </>
             )}
 
             {(props.modalTitle === 'You win') && (
-              <View className='items-center'>
-                <AntDesign
-                  name='checkcircleo'
-                  size={50}
-                  color='#22c55e'
-                />
-
-                <Text
-                  className='text-2xl font-bold text-green-500 pt-3'
-                >
-                  {props.modalTitle}
-                </Text>
-              </View>
+              <>
+                <Icon name='checkcircleo' type='antdesign' xxxlarge success />
+                <Text bold xlarge success>{props.modalTitle}</Text>
+              </>
             )}
 
             {(props.modalTitle.endsWith('wins')) && (
-              <View className='items-center'>
-                <AntDesign
-                  name='closecircleo'
-                  size={50}
-                  color='#ef4444'
-                />
-
-                <Text
-                  className='text-2xl font-bold text-red-500 pt-3'
-                >
-                  {props.modalTitle}
-                </Text>
-              </View>
+              <>
+                <Icon name='closecircleo' type='antdesign' xxxlarge danger />
+                <Text bold xlarge danger>{props.modalTitle}</Text>
+              </>
             )}
           </View>
 
-          <Text
-            className='text-center text-lg'
-            style={props.themeTextColor}
-          >
+          <Text centered large style={{ paddingTop: 20 }}>
             {props.modalDescription}
           </Text>
         </Card>

@@ -1,6 +1,6 @@
-import { View, Text, Share } from 'react-native';
+import { ScrollView, Share } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Button, Card } from '@rneui/base';
+import { Button, Card, Text, Icon } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 
 import styles from '../css/styles';
@@ -10,7 +10,7 @@ export default function WaitingCard(props) {
   const text = `Room code for Rock Paper Scissors - Online is ${code}`;
 
   //#region Local functions / Funções locais
-  const copy = async () => {
+  const handleCopy = async () => {
     try {
       await Clipboard.setStringAsync(text);
 
@@ -24,7 +24,7 @@ export default function WaitingCard(props) {
     }
   };
 
-  const share = async () => {
+  const handleShare = async () => {
     try {
       await Share.share({
         message: text
@@ -36,58 +36,25 @@ export default function WaitingCard(props) {
   //#endregion
 
   return (
-    <View
-      className='flex-1 justify-center pb-4'
-      style={props.themeBgColor}
-    >
-      <Card
-        containerStyle={[props.themeBgColor, styles.roundedBorder]}
-      >
-        <Card.Title style={props.themeTextColor}>
-          Waiting for an opponent...
-        </Card.Title>
+    <ScrollView contentContainerStyle={styles.containerScrollView}>
+      <Card>
+        <Card.Title>Waiting for an opponent...</Card.Title>
 
         <Card.Divider />
 
-        <Text
-          style={props.themeTextColor}
-          className='text-center pb-3'
-          selectable
-        >
-          Please note your session will expire in 3
-          minutes if an opponent doesn't join the game.
+        <Text selectable centered noPaddingTop>
+          The room code is <Text bold>{code}</Text>. Please note your session
+          will expire in 3 minutes if an opponent doesn't join the game.
         </Text>
 
-        <View className='pb-1.5'>
-          <Button
-            title='COPY ROOM CODE'
-            icon={{
-              name: 'copy',
-              type: 'font-awesome',
-              size: 15,
-              color: '#00A2E8',
-            }}
-            type='outline'
-            size='sm'
-            buttonStyle={styles.roundedBorder}
-            onPress={copy} />
-        </View>
+        <Button type='outline' size='sm' info onPress={handleCopy}>
+          <Icon name='copy' type='font-awesome' small info /> COPY ROOM CODE
+        </Button>
 
-        <View>
-          <Button
-            title='SHARE ROOM CODE'
-            icon={{
-              name: 'share-alt',
-              type: 'font-awesome',
-              size: 15,
-              color: '#00A2E8',
-            }}
-            type='outline'
-            size='sm'
-            buttonStyle={styles.roundedBorder}
-            onPress={share} />
-        </View>
+        <Button type='outline' size='sm' info onPress={handleShare}>
+          <Icon name='share-alt' type='font-awesome' small info /> SHARE ROOM CODE
+        </Button>
       </Card>
-    </View>
+    </ScrollView>
   );
 }

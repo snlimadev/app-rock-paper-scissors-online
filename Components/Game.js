@@ -1,22 +1,20 @@
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Text } from '@rneui/themed';
 
 import styles from '../css/styles';
 import ScoreCard from './ScoreCard';
 import MoveButton from './MoveButton';
 import ResultModal from './ResultModal';
 
+const MOVE_TYPES = ['ROCK', 'PAPER', 'SCISSORS'];
+
 export default function Game(props) {
   const [move, setMove] = useState('');
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.containerScrollView}
-      style={props.themeBgColor}
-    >
+    <ScrollView contentContainerStyle={styles.containerScrollView}>
       <ScoreCard
-        themeBgColor={props.themeBgColor}
-        themeTextColor={props.themeTextColor}
         cardTitle={'SCORE'}
         player1Text={props.player1Text}
         player1Score={props.player1Score}
@@ -25,52 +23,32 @@ export default function Game(props) {
         drawCounter={props.drawCounter}
       />
 
-      <View className='pt-1.5'>
-        {(props.disabledButtons && props.player2Text !== 'COM') ? (
-          <View className='pt-2.5 items-center'>
-            <Text style={props.themeTextColor}>
+      <View style={{ paddingVertical: 12 }}>
+        {(props.disabledButtons && props.player2Text !== 'COM') && (
+          <>
+            <Text centered noPaddingTop>
               You chose {move}.
             </Text>
 
-            <Text style={props.themeTextColor}>
+            <Text centered noPaddingTop>
               Waiting for opponent's choice...
             </Text>
-          </View>
-        ) : (
-          <></>
+          </>
         )}
       </View>
 
-      <View className='pt-5 pb-2.5 px-3.5'>
+      {MOVE_TYPES.map((type, index) => (
         <MoveButton
-          moveType='ROCK'
+          key={type}
+          moveType={type}
           setMoveType={setMove}
           handleMove={props.handleMove}
           disabled={props.disabledButtons}
+          noPaddingTop={index === 0}
         />
-      </View>
-
-      <View className='pb-2.5 px-3.5'>
-        <MoveButton
-          moveType='PAPER'
-          setMoveType={setMove}
-          handleMove={props.handleMove}
-          disabled={props.disabledButtons}
-        />
-      </View>
-
-      <View className='px-3.5 pb-3.5'>
-        <MoveButton
-          moveType='SCISSORS'
-          setMoveType={setMove}
-          handleMove={props.handleMove}
-          disabled={props.disabledButtons}
-        />
-      </View>
+      ))}
 
       <ResultModal
-        themeBgColor={props.themeBgColor}
-        themeTextColor={props.themeTextColor}
         modalVisible={props.modalVisible}
         setModalVisible={props.setModalVisible}
         modalTitle={props.modalTitle}
