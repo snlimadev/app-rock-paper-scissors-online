@@ -39,7 +39,7 @@ export default function Game(props) {
 
       {MOVE_TYPES.map((type, index) => (
         <MoveButton
-          key={type}
+          key={index}
           moveType={type}
           setMoveType={setMove}
           handleMove={props.handleMove}
