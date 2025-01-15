@@ -2,9 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Button, Card, Icon, Dialog, Text } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 import styles from '../../css/styles';
 import LobbyModal from '../LobbyModal';
+
+const BANNER_ID = 'ca-app-pub-4878437225305198/8146060270';
 
 import {
   getWsConnectionUrl,
@@ -90,50 +93,62 @@ export default function Lobby(props) {
   //#endregion
 
   return (
-    <View style={styles.containerView}>
-      <View style={[styles.subcontainer, { justifyContent: 'flex-end' }]}>
-        <Button onPress={() => handleOpenModal('Create Room')} noPaddingTop>
-          <Icon name='plus-circle' type='feather' /> CREATE A ROOM
-        </Button>
+    <>
+      <View style={styles.containerView}>
+        <View style={[styles.subcontainer, { justifyContent: 'flex-end' }]}>
+          <Button onPress={() => handleOpenModal('Create Room')} noPaddingTop>
+            <Icon name='plus-circle' type='feather' /> CREATE A ROOM
+          </Button>
 
-        <Button onPress={() => handleOpenModal('Join Room')}>
-          <Icon name='arrow-right-circle' type='feather' /> JOIN A ROOM
-        </Button>
+          <Button onPress={() => handleOpenModal('Join Room')}>
+            <Icon name='arrow-right-circle' type='feather' /> JOIN A ROOM
+          </Button>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.subcontainer}>
+          <Card>
+            <Card.Title>Public Rooms</Card.Title>
+
+            <Card.Divider />
+
+            {(availableRooms.length > 0) ? (
+              <>
+                {availableRooms.map((rooms, index) => (
+                  <View key={rooms}>
+                    <Button
+                      type='outline'
+                      size='sm'
+                      onPress={() => handleJoinRoom(rooms)}
+                      noPaddingTop={index === 0}
+                    >
+                      <Icon
+                        name='arrow-right-circle'
+                        type='feather'
+                        small
+                        primary
+                      /> {rooms}
+                    </Button>
+                  </View>
+                ))}
+              </>
+            ) : (
+              <Text centered noPaddingTop>
+                No public rooms available.
+              </Text>
+            )}
+          </Card>
+        </ScrollView>
       </View>
 
-      <ScrollView contentContainerStyle={styles.subcontainer}>
-        <Card>
-          <Card.Title>Public Rooms</Card.Title>
-
-          <Card.Divider />
-
-          {(availableRooms.length > 0) ? (
-            <>
-              {availableRooms.map((rooms, index) => (
-                <View key={rooms}>
-                  <Button
-                    type='outline'
-                    size='sm'
-                    onPress={() => handleJoinRoom(rooms)}
-                    noPaddingTop={index === 0}
-                  >
-                    <Icon
-                      name='arrow-right-circle'
-                      type='feather'
-                      small
-                      primary
-                    /> {rooms}
-                  </Button>
-                </View>
-              ))}
-            </>
-          ) : (
-            <Text centered noPaddingTop>
-              No public rooms available.
-            </Text>
-          )}
-        </Card>
-      </ScrollView>
+      {(!loadingVisible) && (
+        <BannerAd
+          unitId={(__DEV__) ? TestIds.BANNER : BANNER_ID}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true
+          }}
+        />
+      )}
 
       <LobbyModal
         modalVisible={modalVisible}
@@ -151,6 +166,6 @@ export default function Lobby(props) {
         <Dialog.Title title='CONNECTING...' />
         <Dialog.Loading />
       </Dialog>
-    </View>
+    </>
   );
 }

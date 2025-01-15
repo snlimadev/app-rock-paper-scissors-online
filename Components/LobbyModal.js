@@ -42,7 +42,7 @@ export default function LobbyModal(props) {
               }}
               renderErrorMessage={false}
               keyboardType='number-pad'
-              maxLength={6}
+              maxLength={8}
               onFocus={() => setFocusedInput(true)}
               onBlur={() => setFocusedInput(false)}
               focused={focusedInput}

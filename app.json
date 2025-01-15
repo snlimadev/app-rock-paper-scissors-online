@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Rock Paper Scissors",
+    "name": "RPS Online",
     "slug": "rock-paper-scissors-online",
-    "version": "1.0.8",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
     },
     "android": {
       "package": "com.snlimadev.rockpaperscissors",
-      "versionCode": 9,
+      "versionCode": 10,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF8C00"
@@ -48,5 +48,8 @@
         }
       ]
     ]
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-4878437225305198~1144973006"
   }
 }

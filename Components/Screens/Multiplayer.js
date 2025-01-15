@@ -2,9 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { BackHandler } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 import WaitingCard from '../WaitingCard';
 import Game from '../Game';
+
+const BANNER_ID = 'ca-app-pub-4878437225305198/8017772616';
 
 import {
   getWsConnectionUrl,
@@ -113,7 +116,19 @@ export default function Multiplayer(props) {
   return (
     <>
       {(!gameStart) ? (
-        <WaitingCard roomCode={roomCode} />
+        <>
+          <WaitingCard roomCode={roomCode} />
+
+          {(action === 'create' && !loadingVisible) && (
+            <BannerAd
+              unitId={(__DEV__) ? TestIds.BANNER : BANNER_ID}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true
+              }}
+            />
+          )}
+        </>
       ) : (
         <Game
           player1Text='YOU'

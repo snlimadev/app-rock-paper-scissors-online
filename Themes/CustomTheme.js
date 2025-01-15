@@ -23,6 +23,7 @@ const customTheme = createTheme({
         paddingTop: (props.noPaddingTop) ? 0 : DEFAULT_PADDING,
         fontWeight: (props.bold) ? 'bold' : 'normal',
         textAlign: (props.centered) ? 'center' : 'auto',
+        textDecorationLine: (props.underline) ? 'underline' : 'none',
         fontSize: (props.xxlarge) ? 30 : (props.xlarge) ? 24 : (props.large) ? 18 : 14,
         color:
           (props.success)
@@ -31,7 +32,9 @@ const customTheme = createTheme({
               ? theme.colors.warning
               : (props.danger)
                 ? theme.colors.danger
-                : theme.colors.black,
+                : (props.primary)
+                  ? theme.colors.primary
+                  : theme.colors.black,
       },
     }),
 
