@@ -46,18 +46,20 @@ export default function Home(props) {
           <Pressable onPress={() => handleOpenURL('com.snlimadev.rockpaperscissors')}>
             <Text primary bold underline noPaddingTop>rate the app</Text>
           </Pressable>
-
-          <Text noPaddingTop> to help us keep improving it for you.</Text>
         </Text>
 
         <Text centered>
-          <Text noPaddingTop>Check out our latest game, </Text>
+          <Text noPaddingTop>You may also like our other online games, </Text>
 
           <Pressable onPress={() => handleOpenURL('com.snlimadev.battleship')}>
-            <Text primary bold underline noPaddingTop>Battleship - Online</Text>
+            <Text primary bold underline noPaddingTop>Battleship</Text>
           </Pressable>
 
-          <Text noPaddingTop>, available now!</Text>
+          <Text noPaddingTop> and </Text>
+
+          <Pressable onPress={() => handleOpenURL('com.snlimadev.jogodavelha')}>
+            <Text primary bold underline noPaddingTop>Tic-Tac-Toe</Text>
+          </Pressable>
         </Text>
       </ScrollView>
 
