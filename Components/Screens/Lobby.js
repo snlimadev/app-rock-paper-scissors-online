@@ -64,12 +64,21 @@ export default function Lobby(props) {
   };
 
   const handleCreateRoom = () => {
-    const randomCode = Math.floor(100000 + Math.random() * 900000);
-    handleRedirect('create', randomCode);
+    const randomCode = Math.floor(1000 + Math.random() * 9000);
+
+    const time = new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(new Date()).replace(':', '');
+
+    handleRedirect('create', String(randomCode) + String(time));
   };
 
   const handleJoinRoom = (selectedRoom) => {
     const roomCode = selectedRoom || roomCodeInput;
+
     handleRedirect('join', roomCode);
   };
   //#endregion
