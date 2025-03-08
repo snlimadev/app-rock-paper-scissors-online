@@ -104,13 +104,11 @@ const customTheme = createTheme({
     }),
 
     Icon: (props, theme) => ({
-      style: (props.topBar) && {
-        paddingVertical: 4,
-        paddingHorizontal: 10,
-      },
+      style: (props.topBar) ? {
+        padding: 4,
+      } : undefined,
       containerStyle: (props.topBar) && {
         borderRadius: 20,
-        paddingHorizontal: 6,
       },
       color:
         (props.disabled)
@@ -130,25 +128,6 @@ const customTheme = createTheme({
         backgroundColor: 'transparent',
       },
       size: (props.xxxlarge) ? 50 : (props.small) ? 15 : 24,
-    }),
-
-    Dialog: (props, theme) => ({
-      overlayStyle: {
-        borderRadius: DEFAULT_RADIUS,
-        backgroundColor: theme.colors.white,
-        borderWidth: 0.5,
-        borderColor: theme.colors.grey4,
-      },
-      backdropStyle: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      },
-    }),
-
-    DialogTitle: (props, theme) => ({
-      titleStyle: {
-        textAlign: 'center',
-        color: theme.colors.black,
-      },
     }),
   },
 

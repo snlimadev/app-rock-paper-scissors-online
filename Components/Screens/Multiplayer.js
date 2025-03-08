@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { BackHandler } from 'react-native';
-import { Dialog } from '@rneui/themed';
+import { BackHandler, Modal } from 'react-native';
+import { Card, Text, Button } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
+import styles from '../../css/styles';
 import WaitingCard from '../WaitingCard';
 import Game from '../Game';
 
@@ -146,10 +147,12 @@ export default function Multiplayer(props) {
         />
       )}
 
-      <Dialog isVisible={loadingVisible}>
-        <Dialog.Title title='LOADING...' />
-        <Dialog.Loading />
-      </Dialog>
+      <Modal visible={loadingVisible} onRequestClose={() => null}>
+        <Card containerStyle={styles.loadingCard}>
+          <Text bold centered noPaddingTop>LOADING...</Text>
+          <Button type='clear' loading disabled noPaddingTop />
+        </Card>
+      </Modal>
     </>
   );
 }

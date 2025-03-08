@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
-import { Button, Card, Icon, Dialog, Text } from '@rneui/themed';
+import { ScrollView, View, Modal } from 'react-native';
+import { Button, Card, Icon, Text } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
@@ -171,10 +171,12 @@ export default function Lobby(props) {
         joinRoomAction={handleJoinRoom}
       />
 
-      <Dialog isVisible={loadingVisible}>
-        <Dialog.Title title='CONNECTING...' />
-        <Dialog.Loading />
-      </Dialog>
+      <Modal visible={loadingVisible} onRequestClose={() => null}>
+        <Card containerStyle={styles.loadingCard}>
+          <Text bold centered noPaddingTop>CONNECTING...</Text>
+          <Button type='clear' loading disabled noPaddingTop />
+        </Card>
+      </Modal>
     </>
   );
 }

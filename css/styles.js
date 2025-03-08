@@ -33,6 +33,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
+
+  loadingCard: {
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 0,
+    borderRadius: 0,
+    borderWidth: 0,
+  },
 });
 
 export default styles;
