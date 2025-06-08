@@ -4,20 +4,16 @@ import { showMessage } from 'react-native-flash-message';
 // Função para lidar com os eventos do Web Socket no jogo
 export function handleGameWebSocketEvents(
   ws,
-  setReadyState,
   handleCreateOrJoinRoom,
   handleGameRounds,
   navigate
 ) {
   if (ws) {
     ws.onopen = () => {
-      setReadyState('OPEN');
       handleCreateOrJoinRoom();
     };
 
-    ws.onclose = () => {
-      setReadyState('CLOSED');
-    };
+    ws.onclose = () => { };
 
     ws.onerror = () => {
       showMessage({

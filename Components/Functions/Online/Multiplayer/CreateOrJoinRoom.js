@@ -7,6 +7,8 @@ export function createOrJoinRoom(action, publicRoom, roomCode, ws) {
     roomCode: roomCode
   };
 
-  ws.send(JSON.stringify(messageData));
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(messageData));
+  }
 };
 //#endregion

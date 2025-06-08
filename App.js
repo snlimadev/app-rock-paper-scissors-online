@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { ThemeProvider } from '@rneui/themed';
 import FlashMessage from 'react-native-flash-message';
 
@@ -9,7 +10,7 @@ export default function App() {
     <ThemeProvider theme={customTheme}>
       <Routes />
 
-      <FlashMessage position='top' />
+      <FlashMessage hideStatusBar={Platform.OS === 'android' && Platform.Version >= 35} />
     </ThemeProvider>
   );
 }

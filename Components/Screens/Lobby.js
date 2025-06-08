@@ -18,7 +18,6 @@ import {
 
 export default function Lobby(props) {
   const [loadingVisible, setLoadingVisible] = useState(true);
-  const [readyState, setReadyState] = useState('CONNECTING');
   const [availableRooms, setAvailableRooms] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
@@ -52,9 +51,7 @@ export default function Lobby(props) {
   const handleRedirect = (action, roomCode) => {
     setModalVisible(false);
 
-    if (ws && readyState === 'OPEN') {
-      ws.close();
-    }
+    if (ws) ws.close();
 
     props.navigation.navigate('Multiplayer', {
       action: action,
@@ -87,18 +84,15 @@ export default function Lobby(props) {
   useEffect(() => {
     handleLobbyWebSocketEvents(
       ws,
-      setReadyState,
       handleGetAvailableRoomsList,
       handleUpdateAvailableRooms,
       navigate
     );
 
     return () => {
-      if (ws && readyState === 'OPEN') {
-        ws.close();
-      }
+      if (ws) ws.close();
     };
-  }, [readyState]);
+  }, []);
   //#endregion
 
   return (

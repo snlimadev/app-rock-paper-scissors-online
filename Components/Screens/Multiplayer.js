@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { BackHandler, Modal } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { BackHandler, Modal, AppState, Platform } from 'react-native';
 import { Card, Text, Button } from '@rneui/themed';
 import { showMessage } from 'react-native-flash-message';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
@@ -20,7 +20,6 @@ import {
 
 export default function Multiplayer(props) {
   const [loadingVisible, setLoadingVisible] = useState(true);
-  const [readyState, setReadyState] = useState('CONNECTING');
   const [playerScore, setPlayerScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [drawCounter, setDrawCounter] = useState(0);
@@ -30,21 +29,43 @@ export default function Multiplayer(props) {
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
   const [disabledButtons, setDisabledButtons] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
 
-  const ws = useMemo(() => new WebSocket(getWsConnectionUrl()), []);
+  const ws = useRef(null);
   const navigate = props.navigation.navigate;
   const { action, publicRoom, roomCode } = props.route.params;
   const player = (action === 'create') ? 'PLAYER 1' : 'PLAYER 2';
 
   //#region Local functions / Funções locais
+  const handleConnect = () => {
+    if (!ws.current) {
+      setLoadingVisible(true);
+      ws.current = new WebSocket(getWsConnectionUrl());
+
+      handleGameWebSocketEvents(
+        ws.current,
+        handleCreateOrJoinRoom,
+        handleGameRounds,
+        navigate
+      );
+    }
+  };
+
+  const handleDisconnect = () => {
+    if (ws.current) {
+      ws.current.close();
+      ws.current = null;
+    }
+  };
+
   const handleCreateOrJoinRoom = () => {
-    createOrJoinRoom(action, publicRoom, roomCode, ws);
+    createOrJoinRoom(action, publicRoom, roomCode, ws.current);
     setLoadingVisible(false);
   };
 
   const handleMove = (move) => {
     setDisabledButtons(true);
-    makeMove(move, ws, readyState);
+    makeMove(move, ws.current);
   };
 
   const handleGameRounds = (e) => {
@@ -84,20 +105,26 @@ export default function Multiplayer(props) {
 
   //#region useEffect hooks
   useEffect(() => {
-    handleGameWebSocketEvents(
-      ws,
-      setReadyState,
-      handleCreateOrJoinRoom,
-      handleGameRounds,
-      navigate
-    );
-
     return () => {
-      if (ws && readyState === 'OPEN') {
-        ws.close();
-      }
+      handleDisconnect();
     };
-  }, [readyState]);
+  }, []);
+
+  useEffect(() => {
+    if (appState === 'active') {
+      handleConnect();
+    } else if (Platform.OS === 'android' && Platform.Version >= 35) {
+      handleDisconnect();
+      setPlayerScore(0);
+      setOpponentScore(0);
+      setDrawCounter(0);
+      setGameStart(false);
+      setModalVisible(false);
+      setModalTitle('');
+      setModalDescription('');
+      setDisabledButtons(false);
+    }
+  }, [appState]);
 
   useEffect(() => {
     if (gameEnd) {
@@ -112,6 +139,16 @@ export default function Multiplayer(props) {
       BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
     };
   }, [props.navigation]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      setAppState(nextAppState);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   //#endregion
 
   return (

@@ -2,7 +2,7 @@
   "expo": {
     "name": "RPS Online",
     "slug": "rock-paper-scissors-online",
-    "version": "1.1.5",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,7 +16,7 @@
     },
     "android": {
       "package": "com.snlimadev.rockpaperscissors",
-      "versionCode": 15,
+      "versionCode": 16,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FF8C00"
@@ -36,7 +36,7 @@
         {
           "android": {
             "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
+            "targetSdkVersion": 35,
             "buildToolsVersion": "34.0.0"
           }
         }

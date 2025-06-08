@@ -5,6 +5,8 @@ export function getAvailableRoomsList(ws) {
     action: 'getRooms'
   };
 
-  ws.send(JSON.stringify(messageData));
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(messageData));
+  }
 };
 //#endregion

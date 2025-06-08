@@ -4,20 +4,16 @@ import { showMessage } from 'react-native-flash-message';
 // Função para lidar com os eventos do Web Socket no lobby
 export function handleLobbyWebSocketEvents(
   ws,
-  setReadyState,
   handleGetAvailableRoomsList,
   handleUpdateAvailableRooms,
   navigate
 ) {
   if (ws) {
     ws.onopen = () => {
-      setReadyState('OPEN');
       handleGetAvailableRoomsList();
     };
 
-    ws.onclose = () => {
-      setReadyState('CLOSED');
-    };
+    ws.onclose = () => { };
 
     ws.onerror = () => {
       showMessage({
