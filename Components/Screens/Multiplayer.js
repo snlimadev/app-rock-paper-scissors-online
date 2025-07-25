@@ -86,7 +86,7 @@ export default function Multiplayer(props) {
 
   const handleGameEnd = () => {
     showMessage({
-      message: 'Opponent left. Final score:',
+      message: 'Opponent left.\nFinal score:',
       description: `YOU ${playerScore} x ${opponentScore} OPP` +
         `\n${drawCounter} DRAWS`,
       type: 'info',
