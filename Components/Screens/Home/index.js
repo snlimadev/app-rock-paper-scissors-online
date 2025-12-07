@@ -54,8 +54,8 @@ export default function Home(props) {
         <Text centered>
           <Text noPaddingTop>You may also like our other online games, </Text>
 
-          <Pressable onPress={() => handleOpenURL('com.snlimadev.battleship')}>
-            <Text primary bold underline noPaddingTop>Battleship</Text>
+          <Pressable onPress={() => handleOpenURL('com.snlimadev.battlefleet')}>
+            <Text primary bold underline noPaddingTop>Battlefleet</Text>
           </Pressable>
 
           <Text noPaddingTop> and </Text>
